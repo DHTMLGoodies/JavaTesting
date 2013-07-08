@@ -29,14 +29,56 @@ public class BoardCache {
 			.put("B", "whiteBishop").put("N", "whiteKnight")
 			.put("R", "whiteRook").put("Q", "whiteQueen").put("K", "whiteKing")
 			.build();
+	
+	public static final Integer[] pawnPatternsWhite = { 16,32,15,17};
+	public static final Integer[] pawnPatternsBlack = { 16,32,15,17};
+	public static final Integer[] bishopPattern = { -15, -17, 15, 17 };
+	public static final Integer[] rookPattern = { -1, -1, -16, 16 };
+	public static final Integer[] kingPattern = { -15,-17,15,17,-1,1,-16,16 };
+	public static final Integer[] queenPattern = { -17, -16, -15, -1, 1, 15, 16, 17 };
+	
+	public static final Map<Integer, Integer[]> movePatterns = (Map<Integer, Integer[]>) ImmutableMap
+			.<Integer, Integer[]> builder()
+			.put(0x01, BoardCache.pawnPatternsWhite)
+			.put(0x09, BoardCache.pawnPatternsBlack)
+			.put(0x05, BoardCache.bishopPattern)
+			.put(0x0D, BoardCache.bishopPattern)
+			.put(0x06, BoardCache.rookPattern)
+			.put(0x0E, BoardCache.rookPattern)
+			.put(0x02, BoardCache.kingPattern)
+			.put(0x0A, BoardCache.kingPattern)
+			.put(0x03, BoardCache.queenPattern)
+			.put(0x0B, BoardCache.queenPattern)			
+			.build();
 
 	public static final Integer[] numericMapping = { 0, 1, 2, 3, 4, 5, 6, 7,
 			16, 17, 18, 19, 20, 21, 22, 23, 32, 33, 34, 35, 36, 37, 38, 39, 48,
 			49, 50, 51, 52, 53, 54, 55, 64, 65, 66, 67, 68, 69, 70, 71, 80, 81,
 			82, 83, 84, 85, 86, 87, 96, 97, 98, 99, 100, 101, 102, 103, 112,
 			113, 114, 115, 116, 117, 118, 119
-
 	};
+	
+	public static final Map<String, Integer> numbers = ImmutableMap.<String, Integer> builder(). 
+			put("0", 1).put("1",1).put("2",1).put("3", 1).put("4", 1).put("5", 1).put("6", 1).put("7",1).put("8",1).build();
+	
+	public static final Map<Integer, String> typeMapping = ImmutableMap.<Integer, String> builder()
+			.put(0x01, "pawn").put(0x02,"knight").put(0x03, "king").put(0x05, "bishop").put(0x06, "rook").put(0x07, "queen")
+			.put(0x09, "pawn").put(0x0A,"knight").put(0x0B, "king").put(0x0D, "bishop").put(0x0E, "rook").put(0x0F, "queen")
+			.build();
+
+	public static final Map<Integer, String> numberToColorMapping = ImmutableMap
+			.<Integer, String> builder().put(0x01, "white").put(0x02, "white")
+			.put(0x03, "white").put(0x05, "white").put(0x06, "white")
+			.put(0x07, "white").put(0x09, "black").put(0x0A, "black")
+			.put(0x0B, "black").put(0x0D, "black").put(0x0E, "black")
+			.put(0x0F, "black").build();
+
+	public static final Map<String, String> colorMapping = ImmutableMap
+			.<String, String> builder().put("p", "black").put("n", "black")
+			.put("b", "black").put("r", "black").put("q", "black")
+			.put("k", "black").put("P", "white").put("N", "white")
+			.put("B", "white").put("R", "white").put("Q", "white")
+			.put("K", "white").build();
 
 	public static final Map<String, Integer> mapping = ImmutableMap
 			.<String, Integer> builder().put("a1", 0).put("b1", 1).put("c1", 2)

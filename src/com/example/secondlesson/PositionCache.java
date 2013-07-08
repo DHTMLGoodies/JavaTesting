@@ -1,31 +1,49 @@
 package com.example.secondlesson;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-import android.util.SparseIntArray;
+import android.annotation.SuppressLint;
 
 public class PositionCache {
 
-	private SparseIntArray board;
-	private ArrayList<Integer> whitePieces;
-	private ArrayList<Integer> blackPieces; 
+	private Map<Integer, Integer> board;
+	private ArrayList<Piece> whitePieces;
+	private ArrayList<Piece> blackPieces; 
+	
+	private Piece whiteKing;
+	private Piece blackKing;
 	 
 	public PositionCache(){ 
 		clear();
 	}
 	
+	@SuppressLint("UseSparseArrays")
 	public void clear(){
-		board = new SparseIntArray();
-		whitePieces = new ArrayList<Integer>();
-		blackPieces = new ArrayList<Integer>();
+		board = new HashMap<Integer, Integer>();
+		whitePieces = new ArrayList<Piece>();
+		blackPieces = new ArrayList<Piece>();
 	}
 	
 	public void addPiece(Integer square, Integer piece){
-		board.append(square, piece);
+		board.put(square, piece);
 	}
 	
-	public void addColoredPiece(Integer color, Integer piece){
-		
+	public void addColoredPiece(String color, Piece piece){
+		if(piece.isWhite()){
+			whitePieces.add(piece);
+		}else{
+			blackPieces.add(piece);
+		}
+	}
+	
+	public void storeKing(Piece piece){
+		if(piece.isWhite()){
+			whiteKing = piece;
+		}else{
+			blackKing = piece;
+		}
 	}
 }
  

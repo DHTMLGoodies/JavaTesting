@@ -65,6 +65,14 @@ public class FenParserTest extends TestCase {
 		
 	}
 	
+	public void testShouldFindEnPassantSquares(){
+		// given
+		FenParser c = new FenParser("5k2/8/8/3pP3/8/8/8/7K w - d6 0 1");
+		
+		Assert.assertEquals("d6", c.getEnPassantSquare());
+		
+	}
+	
 	private String defaultFen(){
 		return "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 	}

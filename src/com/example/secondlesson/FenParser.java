@@ -30,6 +30,7 @@ public class FenParser {
 	private void setFen(String fenToSet){
 		fen = fenToSet;	
 		updateFenCache();
+		parseFen();
 	}
 	
 	@SuppressLint("UseValueOf")
@@ -43,46 +44,42 @@ public class FenParser {
 		cache.put("enPassant", temp[3]);
 		cache.put("halfMoves", new Integer(temp[4]));
 		cache.put("fullMoves", new Integer(temp[5]));
-		
-		
-		
-		cache.put("board", new SparseIntArray(128));
-		cache.put("white", new SparseIntArray(128));
-		cache.put("black", new SparseIntArray(128));
-		cache.put("whiteSliding", new SparseIntArray(128));
-		cache.put("blackSliding", new SparseIntArray(128));
 
 	}
 	
 	private void parseFen(){
 		Integer pos = 0;
-		Integer emptyCounter = 0;
+	
+		String pieces = this.getFenPieces();
 		
 		int len = this.getFenPieces().length();
 		for(int i=0; i < len; i++){
 			
-			char token = this.getFenPieces().charAt(i);
+			char token = pieces.charAt(i);
 			
 			if(BoardCache.fenPieces.containsKey(token)){
-				Integer index = BoardCache.mapping.get(BoardCache.squares[pos]);
+				Integer index = BoardCache.mapping.get(BoardCache.fenSquares[pos]);
 				Integer type = BoardCache.pieces.get(token);
 				
-				Map<String, Integer> piece = new HashMap<String, Integer>();
-				piece.put("t", type);
-				piece.put("s", index);
+				Piece piece = new Piece(type, index);
 				
-				cache["board"].
-				
-				cache.get("white").add(piece);
-				
-				
-			}
-			
-			
-		}
-		
 
-		
+				posCache.addColoredPiece(BoardCache.colorMapping.get(token), piece);			
+				
+				if(BoardCache.typeMapping.get(type) == "king"){
+					posCache.storeKing(piece);
+				}
+				
+				pos ++;
+			}else if(i < len && BoardCache.numbers.containsKey(token)){
+				char token2 = pieces.charAt(i + 1);
+				if(BoardCache.numbers.containsKey(token2)){
+					pos +=  Integer.parseInt(pieces.substring(i, 2));					
+				}else{
+					pos += (int) token;
+				}				
+			}
+		}
 	}
 	
 	private String getFenPieces(){
@@ -105,6 +102,11 @@ public class FenParser {
 	public boolean canCastleQueenSide(String color){
 		int code = color.equals("white") ? BoardCache.castle.get("Q") : BoardCache.castle.get("q");
 		return (getCastleCode() & code) == 0 ? false : true;
+	}
+	
+	public String getEnPassantSquare(){
+		String enPassant = (String) cache.get("enPassant");
+		return enPassant != "-" ? enPassant : null;
 	}
 	
 	private String getColorCode(){
