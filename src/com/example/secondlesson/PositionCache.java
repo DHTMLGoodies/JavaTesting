@@ -45,5 +45,13 @@ public class PositionCache {
 			blackKing = piece;
 		}
 	}
+	
+	public ArrayList<Piece> getWhitePieces(){
+		return whitePieces;
+	}
+	
+	public ArrayList<Piece> getBlackPieces(){
+		return blackPieces;
+	}
 }
  

@@ -1,10 +1,10 @@
 package com.example.secondlesson;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import android.annotation.SuppressLint;
-import android.util.SparseIntArray;
 
 public class FenParser {
 
@@ -52,17 +52,19 @@ public class FenParser {
 	
 		String pieces = this.getFenPieces();
 		
-		int len = this.getFenPieces().length();
+		int len = pieces.length();
+		
 		for(int i=0; i < len; i++){
 			
-			char token = pieces.charAt(i);
+			// char token = pieces.charAt(i);
+			
+			String token = pieces.substring(i, i+1);
 			
 			if(BoardCache.fenPieces.containsKey(token)){
 				Integer index = BoardCache.mapping.get(BoardCache.fenSquares[pos]);
 				Integer type = BoardCache.pieces.get(token);
 				
-				Piece piece = new Piece(type, index);
-				
+				Piece piece = new Piece(type, index);				
 
 				posCache.addColoredPiece(BoardCache.colorMapping.get(token), piece);			
 				
@@ -76,11 +78,13 @@ public class FenParser {
 				if(BoardCache.numbers.containsKey(token2)){
 					pos +=  Integer.parseInt(pieces.substring(i, 2));					
 				}else{
-					pos += (int) token;
+					pos += Integer.parseInt(token);	
 				}				
 			}
 		}
 	}
+	
+	
 	
 	private String getFenPieces(){
 		return (String) cache.get("pieces");
@@ -88,6 +92,22 @@ public class FenParser {
 	
 	public int getFullMoves(){
 		return (Integer) cache.get("fullMoves");
+	}
+	
+	public int getHalfMoves(){
+		return (Integer) cache.get("halfMoves");
+	}
+	
+	public ArrayList<Piece> getPiecesOfAColor(String color){
+		return color == "white" ? posCache.getWhitePieces() : posCache.getBlackPieces();
+	}
+	 
+	public boolean isOnSameRank(int square1, int square2){
+		return (square1 & 240) == (square2 & 240);
+	}
+	
+	public boolean isOnSameFile(int square1, int square2){
+		return (square1 & 15) == (square2 & 15);
 	}
 	
 	private int getCastleCode(){
