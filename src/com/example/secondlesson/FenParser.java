@@ -84,6 +84,9 @@ public class FenParser {
 		}
 	}
 	
+	public int getDistance(int sq1, int sq2){
+		return BoardCache.distances.get(sq2 - sq1 + (sq2 | 7) - (sq1 | 7) + 240);
+	}
 	
 	
 	private String getFenPieces(){

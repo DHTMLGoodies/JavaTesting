@@ -19,4 +19,12 @@ public class Piece {
 	public boolean isWhite(){
 		return color == "white";
 	}
+	
+	public int getSquare(){
+		return square;
+	}
+	
+	public int getType(){
+		return type;
+	}
 }

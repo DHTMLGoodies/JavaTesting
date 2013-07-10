@@ -20,6 +20,10 @@ public class BoardCache {
 			"g4", "h4", "a3", "b3", "c3", "d3", "e3", "f3", "g3", "h3", "a2",
 			"b2", "c2", "d2", "e2", "f2", "g2", "h2", "a1", "b1", "c1", "d1",
 			"e1", "f1", "g1", "h1" };
+	
+	public static final String[] fileMapping = { "a", "b", "c", "d", "e", "f", "g", "h" };
+	public static final Map<Integer, Integer> rankMapping = ImmutableMap.<Integer,Integer> builder()
+			.put(0,1).put(16,2).put(32,3).put(48,4).put(64,5).put(80,6).put(96,7).put(112,8).build();
 
 	public static final Map<String, String> fenPieces = ImmutableMap
 			.<String, String> builder().put("p", "blackPawns")
@@ -134,6 +138,35 @@ public class BoardCache {
 			.put(116, "e8").put(117, "f8").put(118, "g8").put(119, "h8")
 			.build();
 
+	public static final Map<Integer,Integer> distances = ImmutableMap
+			.<Integer, Integer> builder() 
+			.put(241,1) .put(242,2) .put(243,3) .put(244,4) .put(245,5) .put(246,6) .put(247,7) .put(272,1)
+	        .put(273,1) .put(274,2) .put(275,3) .put(276,4) .put(277,5) .put(278,6) .put(279,7) .put(304,2) .put(305,2)
+	        .put(306,2) .put(307,3) .put(308,4) .put(309,5) .put(310,6) .put(311,7) .put(336,3) .put(337,3) .put(338,3)
+	        .put(339,3) .put(340,4) .put(341,5) .put(342,6) .put(343,7) .put(368,4) .put(369,4) .put(370,4) .put(371,4)
+	        .put(372,4) .put(373,5) .put(374,6) .put(375,7) .put(400,5) .put(401,5) .put(402,5) .put(403,5) .put(404,5)
+	        .put(405,5) .put(406,6) .put(407,7) .put(432,6) .put(433,6) .put(434,6) .put(435,6) .put(436,6) .put(437,6)
+	        .put(438,6) .put(439,7) .put(464,7) .put(465,7) .put(466,7) .put(467,7) .put(468,7) .put(469,7) .put(470,7)
+	        .put(471,7) .put(239,1) .put(271,1) .put(303,2) .put(335,3) .put(367,4) .put(399,5) .put(431,6) .put(463,7)
+	        .put(238,2) .put(270,2) .put(302,2) .put(334,3) .put(366,4) .put(398,5) .put(430,6) .put(462,7) .put(237,3)
+	        .put(269,3) .put(301,3) .put(333,3) .put(365,4) .put(397,5) .put(429,6) .put(461,7) .put(236,4) .put(268,4)
+	        .put(300,4) .put(332,4) .put(364,4) .put(396,5) .put(428,6) .put(460,7) .put(235,5) .put(267,5) .put(299,5)
+	        .put(331,5) .put(363,5) .put(395,5) .put(427,6) .put(459,7) .put(234,6) .put(266,6) .put(298,6) .put(330,6)
+	        .put(362,6) .put(394,6) .put(426,6) .put(458,7) .put(233,7) .put(265,7) .put(297,7) .put(329,7) .put(361,7)
+	        .put(393,7) .put(425,7) .put(457,7) .put(208,1) .put(209,1) .put(210,2) .put(211,3) .put(212,4) .put(213,5)
+	        .put(214,6) .put(215,7) .put(207,1) .put(206,2) .put(205,3) .put(204,4) .put(203,5) .put(202,6) .put(201,7)
+	        .put(176,2) .put(177,2) .put(178,2) .put(179,3) .put(180,4) .put(181,5) .put(182,6) .put(183,7) .put(175,2)
+	        .put(174,2) .put(173,3) .put(172,4) .put(171,5) .put(170,6) .put(169,7) .put(144,3) .put(145,3) .put(146,3)
+	        .put(147,3) .put(148,4) .put(149,5) .put(150,6) .put(151,7) .put(143,3) .put(142,3) .put(141,3) .put(140,4)
+	        .put(139,5) .put(138,6) .put(137,7) .put(112,4) .put(113,4) .put(114,4) .put(115,4) .put(116,4) .put(117,5)
+	        .put(118,6) .put(119,7) .put(111,4) .put(110,4) .put(109,4) .put(108,4) .put(107,5) .put(106,6) .put(105,7)
+	        .put(80,5) .put(81,5) .put(82,5) .put(83,5) .put(84,5) .put(85,5) .put(86,6) .put(87,7) .put(79,5) .put(78,5)
+	        .put(77,5) .put(76,5) .put(75,5) .put(74,6) .put(73,7) .put(48,6) .put(49,6) .put(50,6) .put(51,6) .put(52,6)
+	        .put(53,6) .put(54,6) .put(55,7) .put(47,6) .put(46,6) .put(45,6) .put(44,6) .put(43,6) .put(42,6) .put(41,7)
+	        .put(16,7) .put(17,7) .put(18,7) .put(19,7) .put(20,7) .put(21,7) .put(22,7) .put(23,7) .put(15,7) .put(14,7)
+	        .put(13,7) .put(12,7) .put(11,7) .put(10,7).put(9,7).build();
+			
+	
 	public final Integer[] fenSquaresNumeric = { 112, 113, 114, 115, 116, 117,
 			118, 119, 96, 97, 98, 99, 100, 101, 102, 103, 80, 81, 82, 83, 84,
 			85, 86, 87, 64, 65, 66, 67, 68, 69, 70, 71, 48, 49, 50, 51, 52, 53,
