@@ -38,6 +38,10 @@ public class PositionCache {
 		}
 	}
 	
+	public Piece getKing(String color){
+		return color == "white" ? whiteKing : blackKing;
+	}
+	
 	public void storeKing(Piece piece){
 		if(piece.isWhite()){
 			whiteKing = piece;
@@ -52,6 +56,10 @@ public class PositionCache {
 	
 	public ArrayList<Piece> getBlackPieces(){
 		return blackPieces;
+	}
+	
+	public ArrayList<Piece> getPiecesOfAColor(String color){
+		return color == "white" ? getWhitePieces() : getBlackPieces();
 	}
 }
  

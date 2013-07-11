@@ -15,6 +15,9 @@ public class FenParser {
 
 	private PositionCache posCache = new PositionCache();
 	
+	@SuppressLint("UseSparseArrays")
+	private Map<Integer, Integer> board = new HashMap<Integer, Integer>();
+	
 	public FenParser(String fenToSet){
 		setFen(fenToSet);
 	}
@@ -64,7 +67,9 @@ public class FenParser {
 				Integer index = BoardCache.mapping.get(BoardCache.fenSquares[pos]);
 				Integer type = BoardCache.pieces.get(token);
 				
-				Piece piece = new Piece(type, index);				
+				Piece piece = new Piece(type, index);		
+				
+				board.put(index, type);
 
 				posCache.addColoredPiece(BoardCache.colorMapping.get(token), piece);			
 				
@@ -73,7 +78,7 @@ public class FenParser {
 				}
 				
 				pos ++;
-			}else if(i < len && BoardCache.numbers.containsKey(token)){
+			}else if(i < (len - 1) && BoardCache.numbers.containsKey(token)){
 				char token2 = pieces.charAt(i + 1);
 				if(BoardCache.numbers.containsKey(token2)){
 					pos +=  Integer.parseInt(pieces.substring(i, 2));					
@@ -82,6 +87,120 @@ public class FenParser {
 				}				
 			}
 		}
+	}
+	
+	@SuppressLint("UseSparseArrays")
+	public Map<Integer, Piece> getPinned(String color){
+		Map<Integer, Piece> ret = new HashMap<Integer, Piece>();
+		
+		ArrayList<Piece> pieces = getSlidingPiecesAttackingKing(color == "white" ? "black" : "white");
+		
+		boolean WHITE = color == "white";
+		
+		Piece king = posCache.getKing(color);
+		
+		int i = 0;
+		int len = pieces.size();
+		
+		int kingSquare = king.getSquare();
+		
+		while(i < len){
+			
+			Piece piece = pieces.get(i);
+			int square = piece.getSquare() + piece.getDirectionToKing();
+			int countPieces = 0;			
+			
+			int pinning = 0;
+			
+			while(square != kingSquare && countPieces < 2){
+				if(board.containsKey(square)){
+					countPieces ++;
+					int boardSquare = board.get(square);
+					
+					if((!WHITE && (boardSquare & 0x8) > 0) || (WHITE && (boardSquare & 0x08) == 0)){
+						pinning = square;
+					}else{
+						countPieces = 3;
+					}					
+				}
+				
+				square += piece.getDirectionToKing();
+			}
+			
+			if(countPieces == 1){
+				ret.put(pinning, piece);
+			}
+			
+			i++;
+		}
+		
+		
+		return ret;
+		
+	}
+	
+	public ArrayList<Piece> getSlidingPiecesAttackingKing(String color){
+		
+		ArrayList<Piece> ret = new ArrayList<Piece>();
+		
+		Piece king = getKing(color == "white" ? "black": "white");
+		
+		ArrayList<Piece> pieces = posCache.getPiecesOfAColor(color);
+		
+		int len = pieces.size();
+		
+		for(int i = 0; i < len; i++){
+			Piece p = pieces.get(i);
+			
+			if(p.isSliding()){
+				
+				int numericDistance = king.getSquare() - p.getSquare();
+				int boardDistance = (king.getSquare() - p.getSquare()) / getDistance(king.getSquare(), p.getSquare());
+				
+				switch(p.getType()){
+				
+					case 0x05:
+					case 0x0D:
+						if(numericDistance % 15 == 0 || numericDistance % 17 == 0){
+							p.setDirectionToKing(boardDistance);
+							ret.add(p);
+						}
+					break;
+					
+					case 0x06:
+					case 0x0E:
+						
+						if(numericDistance % 16 == 0){
+							p.setDirectionToKing(boardDistance);
+							ret.add(p);
+						}else if (isOnSameRank(p.getSquare(), king.getSquare())){
+							p.setDirectionToKing(numericDistance > 0 ? 1 : -1);
+							ret.add(p);							
+						}
+						break;
+					case 0x07:
+					case 0x0F:
+						if (numericDistance % 15 == 0 || numericDistance % 17 == 0 || numericDistance % 16 == 0) {
+							p.setDirectionToKing(boardDistance);
+							ret.add(p);		
+						}else if (isOnSameRank(p.getSquare(), king.getSquare())) {
+							p.setDirectionToKing(numericDistance > 0 ? 1 : -1);
+							ret.add(p);		
+						}						
+						break;
+					default:
+				
+				}
+			}
+		}				
+		
+		return ret;
+		
+	}
+	
+
+	public Piece getKing(String color){
+		return posCache.getKing(color);
 	}
 	
 	public int getDistance(int sq1, int sq2){
@@ -130,9 +249,5 @@ public class FenParser {
 	public String getEnPassantSquare(){
 		String enPassant = (String) cache.get("enPassant");
 		return enPassant != "-" ? enPassant : null;
-	}
-	
-	private String getColorCode(){
-		return (String) cache.get("color");
 	}
 }

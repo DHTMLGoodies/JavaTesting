@@ -1,8 +1,12 @@
+import java.util.ArrayList;
+import java.util.Map;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.example.secondlesson.BoardCache;
 import com.example.secondlesson.FenParser;
+import com.example.secondlesson.Piece;
 
 public class FenParserTest extends TestCase {
 
@@ -70,6 +74,70 @@ public class FenParserTest extends TestCase {
 		Assert.assertFalse(d.canCastleQueenSide("white"));
 		Assert.assertTrue(d.canCastleQueenSide("black"));
 
+	}
+	
+	public void testShouldFindSlidingPieces(){
+		// given
+		Piece p = new Piece(Piece.WHITE_BISHOP, 7);
+		
+		// then
+		Assert.assertTrue(p.isSliding());
+		
+		Piece pawn = new Piece(Piece.WHITE_PAWN, 17);
+		
+		Assert.assertFalse(pawn.isSliding());
+		
+	}
+	
+	public void testShouldFindPinnedPieces(){
+		// given
+		FenParser p = new FenParser("6k1/Q5n1/4p3/8/8/1B6/B7/5KR1 b - - 0 1");
+		
+		// when
+		Map<Integer, Piece> pinned = p.getPinned("black");
+		
+		// then
+		Assert.assertEquals(2, pinned.size());
+		
+		Assert.assertNotNull(pinned.get(BoardCache.mapping.get("g7")));
+		Assert.assertNotNull(pinned.get(BoardCache.mapping.get("e6")));
+	}
+	
+	public void testShouldFindSlidingPiecesAttackingKing(){
+		// given
+		FenParser p = new FenParser("R3r1k1/4pppp/8/8/8/6Q1/B4PPP/6K1 w - - 3 13");
+		
+		// when
+		ArrayList<Piece> pieces = p.getSlidingPiecesAttackingKing("white");
+		
+		// then
+		Assert.assertTrue(3 == pieces.size());
+		
+		Assert.assertTrue(1 == pieces.get(0).getDirectionToKing());
+		Assert.assertTrue(16 == pieces.get(1).getDirectionToKing());
+		Assert.assertTrue(17 == pieces.get(2).getDirectionToKing());
+		
+		Assert.assertEquals("a8", pieces.get(0).getSquareAsString());
+		Assert.assertEquals("g3", pieces.get(1).getSquareAsString());
+		Assert.assertEquals("a2", pieces.get(2).getSquareAsString());		
+		
+	}
+	
+	public void testShouldBeAbleToFindKing(){
+		// given
+		FenParser c = new FenParser();
+		
+		// when
+		Piece whiteKing = c.getKing("white");
+		
+		Assert.assertTrue(Piece.WHITE_KING == whiteKing.getType());
+		Assert.assertEquals("e1", whiteKing.getSquareAsString());
+		
+		Piece blackKing = c.getKing("black");
+		
+		Assert.assertTrue(Piece.BLACK_KING == blackKing.getType());
+		Assert.assertEquals("e8", blackKing.getSquareAsString());
+		
 	}
 
 	public void testShouldFindSquaresOnTheSameRank() {
